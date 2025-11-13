@@ -63,7 +63,9 @@ public class PE_05 {
             String productAlign = padRight(product, 15);
 
             // Taula resum
-            order += productAlign + quantity + "\t" + price + " EUR\t" + subtotal + " EUR\n";
+            String line =  productAlign + padQuantity(quantity) + padPrice(price) + padSubtotal(subtotal) + "\n";
+
+            order += line;
 
             // Continuar afegint si/no.
             System.out.print("Add more? (yes/no): ");
@@ -82,8 +84,8 @@ public class PE_05 {
         System.out.println("-----------------------------------------------");
         System.out.println("Total: " + total + " EUR");
     }
-
-    // Metode String per els espais a comanda.
+ 
+    // Metode String per els espais a comanda (Producte).
     public String padRight(String p, int max) {
         String temporal = p;
         for (int i = p.length(); i < max; i++) {
@@ -91,6 +93,30 @@ public class PE_05 {
         }
         return temporal;
     }
+
+    // Crida a padRight per reutilitzar el metode i no copiar codi.
+    // Metode int per els espais a comanda (Quantitat).
+    public String padQuantity(int q) {
+    String text = String.valueOf(q); 
+    return padRight(text, 12);
+}
+
+
+    // Metode double per els espais a comanda (Preu/unitat)
+    public String padPrice(double price) {
+    String text = price + " EUR";
+    return padRight(text, 12);
+}
+
+
+    // Metode double per els espais a comanda (Subtotal)
+    public String padSubtotal(double subtotal) {
+    String text = subtotal + " EUR";
+    return padRight(text, 12);
+}
+
+
+
 
     //  Mètode: actualitzar
     public void update() {
