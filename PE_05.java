@@ -76,13 +76,16 @@ public class PE_05 {
 
         } while (addmore);
 
-        // Resum de la comanda
+        // Resum de la comanda  
         System.out.println();
         System.out.println("Producte    Quantitat   Preu unit.   Subtotal");
         System.out.println("-----------------------------------------------");
         System.out.print(order);
         System.out.println("-----------------------------------------------");
-        System.out.println("Total: " + total + " EUR");
+        System.out.println(padTotalSenseIva(total));
+        System.out.println( padIva(total));
+        System.out.println( padTotal(total));
+
     }
  
     // Metode String per els espais a comanda (Producte).
@@ -113,6 +116,38 @@ public class PE_05 {
     public String padSubtotal(double subtotal) {
     String text = subtotal + " EUR";
     return padRight(text, 12);
+}
+
+   public String padTotalSenseIva(double total) {
+    
+    String col1 = padRight("Total sense IVA:", 15);
+   
+    String col2 = padRight("", 12);
+    String col3 = padRight("", 12);
+    
+    String col4 = padSubtotal(total);
+
+    return col1 + col2 + col3 + col4;
+}
+
+public String padIva(double total) {
+    double iva = total * 0.10;
+    String col1 = padRight("IVA (10%):", 15);
+    String col2 = padRight("", 12);
+    String col3 = padRight("", 12);
+    String col4 = padSubtotal(iva);
+
+    return col1 + col2 + col3 + col4;
+}
+
+public String padTotal(double total) {
+    double totalAmbIva = total * 1.10;
+    String col1 = padRight("TOTAL A PAGAR:", 15);
+    String col2 = padRight("", 12);
+    String col3 = padRight("", 12);
+    String col4 = padSubtotal(totalAmbIva);
+
+    return col1 + col2 + col3 + col4;
 }
 
 
