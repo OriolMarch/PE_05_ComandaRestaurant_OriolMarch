@@ -46,66 +46,85 @@ public class PE_05 {
 
     // Metode Main menu
     public int mainmenu() {
-        Scanner askoption = new Scanner(System.in);
+    Scanner askoption = new Scanner(System.in);
 
-        System.out.println("1) Create a new order:");
-        System.out.println("2) Update the last order:");
-        System.out.println("3) Show the latest order:");
-        System.out.println("4) Exit");
-        System.out.println("------------------------------");
+    System.out.println("1) Create a new order:");
+    System.out.println("2) Update the last order:");
+    System.out.println("3) Show the latest order:");
+    System.out.println("4) Exit");
+    System.out.println("------------------------------");
+
+    int num = 4; 
+
+    try {
         System.out.print("Choose an option (1,2,3 or 4): ");
-
-        int num = askoption.nextInt();
-        return num;
+        num = askoption.nextInt();
+    } catch (InputMismatchException e) {
+        System.out.println("Error: invalid option.");
+        askoption.nextLine();
     }
+
+    return num;
+}
 
     // Metode crear comanda
     public void create() {
-        Scanner input = new Scanner(System.in);
-        boolean addmore = true;
-        String order = "";
-        double total = 0;
+   Scanner input = new Scanner(System.in);
+    boolean addmore = true;
+    String order = "";
+    double total = 0;
 
-        System.out.println("Creating a new order ..");
+    System.out.println("Creating a new order ..");
 
-        do {
-            System.out.print("Enter product name: ");
-            String product = input.nextLine();
+    do {
+        System.out.print("Enter product name: ");
+        String product = input.nextLine();
 
+        int quantity = 0;
+        try {
             System.out.print("Enter quantity: ");
-            int quantity = input.nextInt();
+            quantity = input.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Error: quantity must be a number.");
+            input.nextLine();
+            continue; // vuelve a pedir el producto
+        }
 
+        double price = 0;
+        try {
             System.out.print("Enter unit price: ");
-            double price = input.nextDouble();
-            input.nextLine(); // neteja buffer
+            price = input.nextDouble();
+        } catch (InputMismatchException e) {
+            System.out.println("Error: price must be a number.");
+            input.nextLine();
+            continue;
+        }
 
-            double subtotal = quantity * price;
-            total += subtotal;
+        input.nextLine(); // limpia buffer
 
-            // Alineació amb el producte.
-            String productAlign = padRight(product, 15);
+        double subtotal = quantity * price;
+        total += subtotal;
 
-            // Taula resum
-            String line = productAlign + padQuantity(quantity) + padPrice(price) + padSubtotal(subtotal) + "\n";
+        String productAlign = padRight(product, 15);
+        String line = productAlign + padQuantity(quantity) + padPrice(price) + padSubtotal(subtotal) + "\n";
 
-            order += line;
+        order += line;
 
-            // Continuar afegint si/no.
-            System.out.print("Add more? (yes/no): ");
-            String answer = input.nextLine();
-            if (answer.equalsIgnoreCase("no")) {
-                addmore = false;
-            }
+        System.out.print("Add more? (yes/no): ");
+        String answer = input.nextLine();
+        if (answer.equalsIgnoreCase("no")) {
+            addmore = false;
+        }
 
-        } while (addmore);
+    } while (addmore);
 
-        lastOrder = order;
-        lastTotal = total;
-        hasOrder = true;
+    lastOrder = order;
+    lastTotal = total;
+    hasOrder = true;
 
-        // Resum de la comanda  
-        printTicket(order, total);
-    }
+    printTicket(order, total);
+}
+    
 
     // Metode String per els espais a comanda (Producte).
     public String padRight(String p, int max) {
@@ -165,51 +184,71 @@ public class PE_05 {
     }
 
     public void update() {
-        if (!hasOrder) {
-            System.out.println("No hi ha cap comanda enregistrada");
-            return;
+         if (!hasOrder) {
+        System.out.println("No command registered.");
+        return;
+    }
+
+    Scanner input = new Scanner(System.in);
+    boolean addmore = true;
+
+    String order = lastOrder;
+    double total = lastTotal;
+
+    System.out.println("Updating last order...");
+
+    do {
+        System.out.print("Enter product name: ");
+        String product = input.nextLine();
+
+        int quantity = 0;
+        try {
+            System.out.print("Enter quantity: ");
+            quantity = input.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Error: quantity must be a number.");
+            input.nextLine();
+            continue;
         }
 
-        Scanner input = new Scanner(System.in);
-        boolean addmore = true;
+        double price = 0;
+        try {
+            System.out.print("Enter unit price: ");
+            price = input.nextDouble();
+        } catch (InputMismatchException e) {
+            System.out.println("Error: price must be a number.");
+            input.nextLine();
+            continue;
+        }
 
-        String order = lastOrder;
-        double total = lastTotal;
+        input.nextLine(); // limpiar
 
-        System.out.println("Updating last order...");
+        double subtotal = quantity * price;
+        total += subtotal;
 
-        do {
-            System.out.print("Enter product name: ");
-            String product = input.nextLine();
+        String productAlign = padRight(product, 15);
+        String line = productAlign + padQuantity(quantity) + padPrice(price) + padSubtotal(subtotal) + "\n";
 
-            int quantity = readInt(input, "Enter quantity: ");
-            double price = readDouble(input, "Enter unit price: ");
+        order += line;
 
-            double subtotal = quantity * price;
-            total += subtotal;
+        System.out.print("Add more? (yes/no): ");
+        String answer = input.nextLine();
+        if (answer.equalsIgnoreCase("no")) {
+            addmore = false;
+        }
 
-            String productAlign = padRight(product, 15);
-            String line = productAlign + padQuantity(quantity) + padPrice(price) + padSubtotal(subtotal) + "\n";
+    } while (addmore);
 
-            order += line;
+    lastOrder = order;
+    lastTotal = total;
 
-            System.out.print("Add more? (yes/no): ");
-            String answer = input.nextLine();
-            if (answer.equalsIgnoreCase("no")) {
-                addmore = false;
-            }
-
-        } while (addmore);
-
-        lastOrder = order;
-        lastTotal = total;
-
-        printTicket(order, total);
-    }
+    printTicket(order, total);
+}
+    
 
     public void showLastTicket() {
         if (!hasOrder) {
-            System.out.println("No hi ha cap comanda enregistrada");
+            System.out.println("There's no ticket.");
             return;
         }
 
@@ -239,7 +278,7 @@ public class PE_05 {
                 sc.nextLine();
                 ok = true;
             } catch (InputMismatchException e) {
-                System.out.println("Error: Enter a valid integer.");
+                System.out.println("Put a integer");
                 sc.nextLine();
             }
         }
@@ -257,7 +296,7 @@ public class PE_05 {
                 sc.nextLine();
                 ok = true;
             } catch (InputMismatchException e) {
-                System.out.println("Error: Enter a valid decimal number.");
+                System.out.println("Error.");
                 sc.nextLine();
             }
         }
