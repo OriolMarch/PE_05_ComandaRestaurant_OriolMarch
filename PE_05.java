@@ -1,19 +1,20 @@
-    import java.util.Scanner;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
-    public class PE_05 {
+public class PE_05 {
 
-         String lastOrder = "";
-         double lastTotal = 0.0;
-         boolean hasOrder = false;
-        // Punt d'entrada 
-        public static void main(String[] args) {
-            PE_05 restaurant = new PE_05();
-            restaurant.principal();
-        }
+    private String lastOrder = "";
+    private double lastTotal = 0.0;
+    private boolean hasOrder = false;
 
-        
-        public void principal() {
-            System.out.println("Benvolgut a Comandes March: ");
+    // Punt d'entrada 
+    public static void main(String[] args) {
+        PE_05 restaurant = new PE_05();
+        restaurant.principal();
+    }
+
+    public void principal() {
+        System.out.println("Benvolgut a Comandes March: ");
         int option;
 
         do {
@@ -43,109 +44,101 @@
         } while (option != 4);
     }
 
-        }
+    // Metode Main menu
+    public int mainmenu() {
+        Scanner askoption = new Scanner(System.in);
 
-        // Metode Main menu
-        public int mainmenu() {
-            Scanner askoption = new Scanner(System.in);
+        System.out.println("1) Create a new order:");
+        System.out.println("2) Update the last order:");
+        System.out.println("3) Show the latest order:");
+        System.out.println("4) Exit");
+        System.out.println("------------------------------");
+        System.out.print("Choose an option (1,2,3 or 4): ");
 
-            System.out.println("1) Create a new order:");
-            System.out.println("2) Update the last order:");
-            System.out.println("3) Show the latest order:");
-            System.out.println("4) Exit");
-            System.out.println("------------------------------");
-            System.out.print("Choose an option (1,2,3 or 4): ");
+        int num = askoption.nextInt();
+        return num;
+    }
 
-            int num = askoption.nextInt();
-            return num;
-        }
+    // Metode crear comanda
+    public void create() {
+        Scanner input = new Scanner(System.in);
+        boolean addmore = true;
+        String order = "";
+        double total = 0;
 
-        // Metode crear comanda
-        public void create() {
-            Scanner input = new Scanner(System.in);
-            boolean addmore = true;
-            String order = "";
-            double total = 0;
+        System.out.println("Creating a new order ..");
 
-            System.out.println("Creating a new order ..");
+        do {
+            System.out.print("Enter product name: ");
+            String product = input.nextLine();
 
-            do {
-                System.out.print("Enter product name: ");
-                String product = input.nextLine();
+            System.out.print("Enter quantity: ");
+            int quantity = input.nextInt();
 
-                System.out.print("Enter quantity: ");
-                int quantity = input.nextInt();
+            System.out.print("Enter unit price: ");
+            double price = input.nextDouble();
+            input.nextLine(); // neteja buffer
 
-                System.out.print("Enter unit price: ");
-                double price = input.nextDouble();
-                input.nextLine(); // neteja buffer
+            double subtotal = quantity * price;
+            total += subtotal;
 
-                double subtotal = quantity * price;
-                total += subtotal;
+            // Alineació amb el producte.
+            String productAlign = padRight(product, 15);
 
-                // Alineació amb el producte.
-                String productAlign = padRight(product, 15);
+            // Taula resum
+            String line = productAlign + padQuantity(quantity) + padPrice(price) + padSubtotal(subtotal) + "\n";
 
-                // Taula resum
-                String line =  productAlign + padQuantity(quantity) + padPrice(price) + padSubtotal(subtotal) + "\n";
+            order += line;
 
-                order += line;
-
-                // Continuar afegint si/no.
-                System.out.print("Add more? (yes/no): ");
-                String answer = input.nextLine();
-                if (answer.equalsIgnoreCase("no")) {
-                    addmore = false;
-                }
-
-            } while (addmore);
-
-            lastOrder = order;
-            lastTotal = total;
-            hasOrder = true;
-
-            // Resum de la comanda  
-            printTicket(order, total);
-
-        }
-    
-        // Metode String per els espais a comanda (Producte).
-        public String padRight(String p, int max) {
-            String temporal = p;
-            for (int i = p.length(); i < max; i++) {
-                temporal = temporal + " ";
+            // Continuar afegint si/no.
+            System.out.print("Add more? (yes/no): ");
+            String answer = input.nextLine();
+            if (answer.equalsIgnoreCase("no")) {
+                addmore = false;
             }
-            return temporal;
-        }
 
-        // Crida a padRight per reutilitzar el metode i no copiar codi.
-        // Metode int per els espais a comanda (Quantitat).
-        public String padQuantity(int q) {
+        } while (addmore);
+
+        lastOrder = order;
+        lastTotal = total;
+        hasOrder = true;
+
+        // Resum de la comanda  
+        printTicket(order, total);
+    }
+
+    // Metode String per els espais a comanda (Producte).
+    public String padRight(String p, int max) {
+        String temporal = p;
+        for (int i = p.length(); i < max; i++) {
+            temporal = temporal + " ";
+        }
+        return temporal;
+    }
+
+    // Crida a padRight per reutilitzar el metode i no copiar codi.
+    // Metode int per els espais a comanda (Quantitat).
+    public String padQuantity(int q) {
         String text = String.valueOf(q); 
         return padRight(text, 12);
     }
 
-
-        // Metode double per els espais a comanda (Preu/unitat)
-        public String padPrice(double price) {
+    // Metode double per els espais a comanda (Preu/unitat)
+    public String padPrice(double price) {
         String text = price + " EUR";
         return padRight(text, 12);
     }
 
-
-        // Metode double per els espais a comanda (Subtotal)
-        public String padSubtotal(double subtotal) {
+    // Metode double per els espais a comanda (Subtotal)
+    public String padSubtotal(double subtotal) {
         String text = subtotal + " EUR";
         return padRight(text, 12);
     }
 
     public String padTotalSenseIva(double total) {
-        
         String col1 = padRight("Total sense IVA:", 15);
-    
         String col2 = padRight("", 12);
         String col3 = padRight("", 12);
-        
         String col4 = padSubtotal(total);
 
         return col1 + col2 + col3 + col4;
@@ -170,7 +163,7 @@
 
         return col1 + col2 + col3 + col4;
     }
-    
+
     public void update() {
         if (!hasOrder) {
             System.out.println("No hi ha cap comanda enregistrada");
@@ -214,7 +207,16 @@
         printTicket(order, total);
     }
 
-     public void printTicket(String order, double total) {
+    public void showLastTicket() {
+        if (!hasOrder) {
+            System.out.println("No hi ha cap comanda enregistrada");
+            return;
+        }
+
+        printTicket(lastOrder, lastTotal);
+    }
+
+    public void printTicket(String order, double total) {
         System.out.println();
         System.out.println("Producte    Quantitat   Preu unit.   Subtotal");
         System.out.println("-----------------------------------------------");
@@ -225,4 +227,40 @@
         System.out.println(padTotal(total));
     }
 
+    // Excepcions de enters i decimals.
+    public int readInt(Scanner sc, String message) {
+        int value = 0;
+        boolean ok = false;
+
+        while (!ok) {
+            System.out.print(message);
+            try {
+                value = sc.nextInt();
+                sc.nextLine();
+                ok = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Enter a valid integer.");
+                sc.nextLine();
+            }
+        }
+        return value;
+    }
+
+    public double readDouble(Scanner sc, String message) {
+        double value = 0;
+        boolean ok = false;
+
+        while (!ok) {
+            System.out.print(message);
+            try {
+                value = sc.nextDouble();
+                sc.nextLine();
+                ok = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Enter a valid decimal number.");
+                sc.nextLine();
+            }
+        }
+        return value;
+    }
 }
